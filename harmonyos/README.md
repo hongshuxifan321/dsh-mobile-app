@@ -13,10 +13,11 @@
 
 1. 打开 DevEco Studio
    - 菜单：`File -> Open`
-   - 如果 DevEco 因路径含中文/空格无法打开，请打开这个 ASCII 快捷目录：
+   - 如果 DevEco 因路径含中文/空格无法打开，请打开这个纯 ASCII 工作副本：
      ```
      C:\dsh-remote-harmonyos
      ```
+   - 注意：`C:\dsh-remote-harmonyos` 是独立副本，不是快捷方式；在 DevEco 里改完后可复制回本目录。
    - 或者选择原始目录：
      ```
      C:\Users\<用户名>\Desktop\协作项目\DSH remote\app-android\harmonyos
