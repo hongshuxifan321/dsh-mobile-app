@@ -10,7 +10,7 @@
         android:layout_height="56dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="#4d6bfe"
+        android:background="#000000"
         android:paddingStart="16dp"
         android:paddingEnd="4dp">
 
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:textColor="#cfe0ff"
+            android:textColor="#cccccc"
             android:textSize="11sp"
             android:paddingEnd="8dp" />
 
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginEnd="8dp"
-            android:background="#3a55d8"
+            android:background="#333333"
             android:text="设置"
             android:textColor="#ffffff"
             android:textSize="14sp"
