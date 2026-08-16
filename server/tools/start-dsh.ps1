@@ -30,8 +30,8 @@ if (Test-Path $CONFIG) {
 }
 $SUBDOMAIN_ID = $CFG['SUBDOMAIN_ID']
 $DOMAIN = $CFG['DOMAIN']
-$KEY = $CFG['DNSHE_KEY']
-$SECRET = $CFG['DNSHE_SECRET']
+$KEY = if ($env:DNSHE_KEY) { $env:DNSHE_KEY } else { $CFG['DNSHE_KEY'] }
+$SECRET = if ($env:DNSHE_SECRET) { $env:DNSHE_SECRET } else { $CFG['DNSHE_SECRET'] }
 if (-not $SUBDOMAIN_ID -or -not $DOMAIN -or -not $KEY -or -not $SECRET) {
   Write-Host '[start-dsh] missing config: copy tools/dsh-config.example.txt to tools/dsh-config.txt and fill in DOMAIN / SUBDOMAIN_ID / DNSHE_KEY / DNSHE_SECRET'
   exit 1
