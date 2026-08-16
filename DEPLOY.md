@@ -14,7 +14,7 @@
 
 ## 二、获取本项目文件
 
-需要两份东西：本仓库的 `app-android/`（手机 App 源码，GitHub Actions 自动构建 APK）
+需要两份东西：本仓库的 `app/`（Android App 源码，GitHub Actions 自动构建 APK）
 和服务端组件（`server/plugin/` 插件 + `server/tools/` 脚本）。
 
 ```
@@ -97,7 +97,7 @@
 
 ## 八、Android 手机端
 
-1. 构建 APK（见 `app-android/README.md`，GitHub Actions 自动构建）；
+1. 构建 APK（见 `README.md`，GitHub Actions 自动构建）；
 2. 手机安装 APK；
 3. 打开 App，设置里填：
    - 服务器地址：`your-domain.de5.net`（自动发现模式）或完整地址 `https://xxx.trycloudflare.com/mobile`

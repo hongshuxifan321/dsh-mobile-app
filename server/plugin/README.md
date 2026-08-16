@@ -31,7 +31,7 @@ npx @deepseek-ai/dsh web --trusted-host dsh.remote
 - 另有 **PWA 通用客户端**（GitHub Pages 托管），适用于 iPhone / 鸿蒙等平台：
   - 地址：<https://hongshuxifan321.github.io/dsh-mobile-app/pwa/>
   - 用户填写自己的服务器地址 / 用户名 / 密码即可连接
-- Android 另有原生 WebView APK，见仓库 `app-android/`
+- Android 另有原生 WebView APK，见仓库 `public/`
 
 ## 原理
 
