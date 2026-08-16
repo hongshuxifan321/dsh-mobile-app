@@ -1,6 +1,6 @@
 # start-dsh.ps1 - One-click DSH start: dsh web + cloudflared quick tunnel + fixed-domain DNS auto-sync
 # The quick tunnel domain changes every restart; this script captures the new domain and
-# updates YOUR fixed domain (e.g. mydsh.de5.net) via the DNSHE API, so the phone always
+# updates YOUR fixed domain (e.g. your-domain.de5.net) via the DNSHE API, so the phone always
 # uses the fixed domain. Fully configurable - see tools/dsh-config.txt.
 # Usage: double-click; tunnel auto-reconnects and re-syncs DNS on every new domain.
 
@@ -151,7 +151,7 @@ while ($true) {
             Update-Dnshe -Cname $tunnelDomain
             $lastDomain = $tunnelDomain
             # Real tunnel domains live only in tools/last-phone-url.txt (runtime,
-            # gitignored). The fixed domain (mydsh.de5.net) is initialized once
+            # gitignored). The fixed domain (your-domain.de5.net) is initialized once
             # in ~/.dsh/mobile-remote.auth - no per-tunnel maintenance needed.
             $phoneUrl = 'https://' + $tunnelDomain
             Write-Host ('[start-dsh] PHONE URL: ' + $phoneUrl + ' (fixed domain https://' + $DOMAIN + ' when DNSHE is healthy)') -ForegroundColor Green

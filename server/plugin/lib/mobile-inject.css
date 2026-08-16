@@ -64,7 +64,7 @@
      官方面板是左右两列（nav 188px + content 154px），390px 屏上内容列
      净宽只剩 ~98px——设置项文字全部溢出（视觉上像竖排）。
      改上下布局：导航横排 wrap 在顶，内容区独占一行满宽。 */
-  [class$="_panel"] {
+  [class$="_panel"]:has([class$="_nav"]) {
     flex-direction: column !important;
     /* 面板整体入视口：官方定位从 y=74 起、高 820px → 底部 50px 被视口裁掉
        （用户实测"看不到全部东西"）。改 fixed 贴顶，底部完整可达 */
@@ -85,12 +85,12 @@
     overflow: hidden !important;
   }
   /* 面板标题栏：普通流 + 不收缩 = 天然固定顶部 */
-  [class$="_panel"] [class*="_header"] {
+  [class$="_panel"]:has([class$="_nav"]) [class*="_header"] {
     flex-shrink: 0 !important;
     background: #fff !important;
     z-index: 2 !important;
   }
-  [class$="_panel"] [class*="_nav"] {
+  [class$="_panel"]:has([class$="_nav"]) [class*="_nav"] {
     flex-shrink: 0 !important;
     background: #fff !important;
     z-index: 2 !important;
@@ -105,7 +105,7 @@
   }
   /* navTitle（"设置"标题）：官方 column 布局下 width:100% 撑满——改 row+wrap 后
      366px 超容器 12px（巡检溢出源，右缘顶到视口边缘），收为内容区宽不溢出 */
-  [class$="_panel"] [class*="_nav"] [class*="_navTitle"] {
+  [class$="_panel"]:has([class$="_nav"]) [class*="_nav"] [class*="_navTitle"] {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
@@ -114,7 +114,7 @@
   /* nav tab（VOzbGW_navCell）：官方 cell 带 flex 拉伸——row+wrap 下被撑成
      334×350 巨块、图标 306px（用户实测"巨大无比的图标"）。
      约束为紧凑横排标签：不拉伸 + 小图标 */
-  [class$="_panel"] [class*="_nav"] [class*="_navCell"] {
+  [class$="_panel"]:has([class$="_nav"]) [class*="_nav"] [class*="_navCell"] {
     width: auto !important;
     height: auto !important;
     min-height: 40px !important;
@@ -122,12 +122,12 @@
     padding: 6px 12px !important;
     border-radius: 20px !important;
   }
-  [class$="_panel"] [class*="_nav"] [class*="_navCell"] svg {
+  [class$="_panel"]:has([class$="_nav"]) [class*="_nav"] [class*="_navCell"] svg {
     width: 18px !important;
     height: 18px !important;
     flex: none !important;
   }
-  [class$="_panel"] [class*="_nav"] [class*="_navLabel"] {
+  [class$="_panel"]:has([class$="_nav"]) [class*="_nav"] [class*="_navLabel"] {
     font-size: 15px !important;
     white-space: nowrap !important;
   }
@@ -298,21 +298,6 @@
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25) !important;
   }
 
-  /* ── 3h. 设置面板插件 tab：flex 子项收缩（修横向溢出） ──
-     实测溢出链：options(366) > section(318) > cards(366 撑开 48px)。
-     flex 子项 min-width:auto 不收缩导致 options 需横向滑动 24px。
-     仅限定 options 内（_card 等类在消息区也有，不误伤） */
-  [class$="_panel"] [class$="_options"] [class$="_section"],
-  [class$="_panel"] [class$="_options"] [class$="_cards"],
-  [class$="_panel"] [class$="_options"] [class$="_card"],
-  [class$="_panel"] [class$="_options"] [class$="_header"],
-  [class$="_panel"] [class$="_options"] [class$="_row"] {
-    min-width: 0 !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    flex: 1 1 auto !important;
-  }
-
   /* ── 4c. 手机端字体放大（用户实测偏小拥挤） ──
      官方基础字号 13-14px 面向桌面；手机视口下主要文本统一上调 1px、
      行高同步放宽。与网页端功能无关，仅字号。 */
@@ -336,7 +321,7 @@
   [class$="_composerSeat"] button {
     font-size: 15px !important;
   }
-  [class$="_panel"] {
+  [class$="_panel"]:has([class$="_nav"]) {
     font-size: 15px !important;
   }
 
@@ -382,5 +367,17 @@
     min-height: calc(env(safe-area-inset-top, 0px) + 60px) !important;
     padding: calc(env(safe-area-inset-top, 0px)) 12px 0 !important;
     box-sizing: border-box !important;
+  }
+}
+
+/* ── 3b. 触屏/平板 tooltip 隐藏（不限于手机 640px） ──
+   官方在触摸/悬停时会给图标按钮浮出“打开侧边栏 / 收起侧边栏 / 命令”等
+   小气泡（span._bubble_owhem_8[role="tooltip"]）。这些只是纯提示，无功能；
+   手机端旧规则只覆盖 max-width:640px，平板宽度超过后又会冒出来。
+   这里用 hover/pointer 媒体查询覆盖所有触屏设备（平板/手机），
+   同时保留 role="tooltip" 语义选择器。 */
+@media (max-width: 1280px), (hover: none), (pointer: coarse) {
+  [role="tooltip"] {
+    display: none !important;
   }
 }

@@ -18,7 +18,7 @@ https://<你的固定域名>/mobile   ← 你电脑上的 mobile-remote 认证�
 127.0.0.1:3080  DSH web
 ```
 
-- 支持两种地址：**固定域名**（如 `mydsh.de5.net`，App 自动通过 DNS 发现当前隧道）或
+- 支持两种地址：**固定域名**（如 `your-domain.de5.net`，App 自动通过 DNS 发现当前隧道）或
   **完整地址**（如 `https://xxx.trycloudflare.com/mobile`）
 - WebView 原生支持 WebSocket → 审批弹窗、实时事件在手机端完全可用
 - 账号密码保存在手机本地设置，只填一次；**密码经 Android Keystore（系统安全硬件）加密存储**，
@@ -35,7 +35,7 @@ https://<你的固定域名>/mobile   ← 你电脑上的 mobile-remote 认证�
 ## 使用
 
 1. 手机上打开 App → 首次启动自动弹出设置；
-2. **服务器地址**填你自己的固定域名（如 `mydsh.de5.net`，自动发现模式），或完整地址
+2. **服务器地址**填你自己的固定域名（如 `your-domain.de5.net`，自动发现模式），或完整地址
    `https://xxx.trycloudflare.com/mobile`（**仅支持 https**，明文 http 会泄露密码）；
    **用户名 / 密码**：你部署 mobile-remote 插件时配置的凭证——默认用户名为 `dsh`，
    密码在服务器上 `~/.dsh/mobile-remote.auth`（自动生成）；也可在 `cordis.patch.yml`

@@ -206,18 +206,17 @@ public class MainActivity extends Activity {
         ll.setPadding(pad, pad / 2, pad, 0);
 
         EditText url = new EditText(this);
-        url.setHint("服务器地址，如 https://xxx.trycloudflare.com/mobile");
-        url.setText(prefs.getString(KEY_URL, ""));
+        url.setHint("服务器地址，如 https://xxx.trycloudflare.com/mobile；或固定域名如 your-domain.de5.net");
+        // 不预填已保存的私人地址/用户名/密码：公开版设置框只展示示例，
+        // 留空保存时保留原值，避免私人固定域名和用户名出现在界面/截图中。
         url.setSingleLine(true);
 
         EditText user = new EditText(this);
         user.setHint("用户名（默认 dsh）");
-        user.setText(prefs.getString(KEY_USER, "dsh"));
         user.setSingleLine(true);
 
         EditText pass = new EditText(this);
-        pass.setHint("密码");
-        pass.setText(CredentialStore.decrypt(prefs.getString(KEY_PASS, "")));
+        pass.setHint("密码（已保存，留空则不修改）");
         pass.setSingleLine(true);
 
         ll.addView(url);
@@ -226,18 +225,26 @@ public class MainActivity extends Activity {
 
         new AlertDialog.Builder(this)
                 .setTitle("DSH 服务器设置")
-                .setMessage("填完整地址如 https://xxx.trycloudflare.com/mobile；或填固定域名如 mydsh.de5.net（自动发现当前隧道）")
+                .setMessage("填完整地址如 https://xxx.trycloudflare.com/mobile；或填固定域名如 your-domain.de5.net（自动发现当前隧道）")
                 .setView(ll)
                 .setPositiveButton("保存并连接", (d, w) -> {
                     String u = url.getText().toString().trim();
+                    String enteredUser = user.getText().toString().trim();
+                    String enteredPass = pass.getText().toString();
+                    String oldUrl = prefs.getString(KEY_URL, "");
+                    String oldUser = prefs.getString(KEY_USER, "dsh");
+                    String oldPass = CredentialStore.decrypt(prefs.getString(KEY_PASS, ""));
+                    String finalUrl = u.isEmpty() ? oldUrl : u;
+                    String finalUser = enteredUser.isEmpty() ? oldUser : enteredUser;
+                    String finalPass = enteredPass.isEmpty() ? oldPass : enteredPass;
                     // 密码走 Keystore 加密；加密失败宁可存空（下次重填）也不留明文
-                    String encPass = CredentialStore.encrypt(pass.getText().toString());
+                    String encPass = CredentialStore.encrypt(finalPass);
                     prefs.edit()
-                            .putString(KEY_URL, u)
-                            .putString(KEY_USER, user.getText().toString().trim())
+                            .putString(KEY_URL, finalUrl)
+                            .putString(KEY_USER, finalUser)
                             .putString(KEY_PASS, encPass == null ? "" : encPass)
                             .apply();
-                    if (!u.isEmpty()) loadConfigured(u);
+                    if (!finalUrl.isEmpty()) loadConfigured(finalUrl);
                 })
                 .setNegativeButton("取消", null)
                 .show();

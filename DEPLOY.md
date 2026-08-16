@@ -29,13 +29,13 @@
 ## 三、注册免费域名（DNSHE）
 
 1. 打开 https://www.dnshe.com 注册账号（邮箱即可）；
-2. 进入 **Domain Hub**，注册一个子域名，如 `mydsh.de5.net`（后缀选 `.de5.net` 等）；
+2. 进入 **Domain Hub**，注册一个子域名，如 `your-domain.de5.net`（后缀选 `.de5.net` 等）；
 3. 进入 **API 管理**，创建 API 密钥，得到 `API Key`（`cfsd_` 开头）和 `API Secret`。
 
 ## 四、配置
 
 1. 复制 `server/tools/dsh-config.example.txt` 为 `server/tools/dsh-config.txt`，填入：
-   - `DOMAIN`：你的子域名（如 `mydsh.de5.net`）
+   - `DOMAIN`：你的子域名（如 `your-domain.de5.net`）
    - `SUBDOMAIN_ID`：DNSHE 控制台里该子域名的 ID
    - `DNSHE_KEY` / `DNSHE_SECRET`：上一步的 API 密钥
 2. 配置登录凭证（手机 App 登录时要用，请记好；不要把密码提交到公开仓库），二选一：
@@ -71,7 +71,7 @@
 
 - 启动 `dsh web`（如未运行）并**自动检查/重打 isLoopback 补丁**（DSH 升级后无需手动）；
 - 启动 cloudflared 快速隧道；
-- 隧道域名一变，自动通过 DNSHE API 把你的固定域名 `mydsh.de5.net`
+- 隧道域名一变，自动通过 DNSHE API 把你的固定域名 `your-domain.de5.net`
   指向最新隧道 → **手机永远访问固定域名，无需改配置**；
 - **dsh web 崩溃自愈**：每 ~10 秒巡检一次，崩溃自动重启；
 - 当前手机访问地址写入 `tools/last-phone-url.txt`，随时可查；
@@ -79,7 +79,7 @@
   导致 `invalid type`——勿改回 curl 方式）。
 
 > 首次运行时，脚本需要一点时间等隧道就绪；看到
-> `PHONE URL: https://mydsh.de5.net/mobile` 即成功。
+> `PHONE URL: https://your-domain.de5.net/mobile` 即成功。
 > **（可选）开机自启 + 守护**：
 > - 运行一次 `server/tools/install-autostart.ps1`——下次登录自动启动（隐藏窗口）；
 > - 注册计划任务 `DSH-Remote-Watchdog`（每 5 分钟跑 `server/tools/dsh-remote-watchdog.ps1`，
@@ -91,7 +91,7 @@
 1. 构建 APK（见 `app-android/README.md`，GitHub Actions 自动构建）；
 2. 手机安装 APK；
 3. 打开 App，设置里填：
-   - 服务器地址：`mydsh.de5.net`（自动发现模式）或完整地址 `https://xxx.trycloudflare.com/mobile`
+   - 服务器地址：`your-domain.de5.net`（自动发现模式）或完整地址 `https://xxx.trycloudflare.com/mobile`
    - 用户名 / 密码：你在 `cordis.patch.yml` 里设置的凭证
 4. 保存即连。此后打开 App 直接进入 DSH，审批弹窗、模型选择、深色模式全可用。
 
