@@ -66,6 +66,12 @@
      改上下布局：导航横排 wrap 在顶，内容区独占一行满宽。 */
   [class$="_panel"] {
     flex-direction: column !important;
+    /* 面板整体入视口：官方定位从 y=74 起、高 820px → 底部 50px 被视口裁掉
+       （用户实测"看不到全部东西"）。改 fixed 贴顶，底部完整可达 */
+    position: fixed !important;
+    top: 12px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
     width: calc(100vw - 24px) !important;
     max-width: 100vw !important;
     /* max-height 双写：vh 全版本支持；dvh 仅新 WebView——不支持 dvh 时
@@ -122,7 +128,7 @@
     flex: none !important;
   }
   [class$="_panel"] [class*="_nav"] [class*="_navLabel"] {
-    font-size: 14px !important;
+    font-size: 15px !important;
     white-space: nowrap !important;
   }
   /* 内容区：唯一滚动容器（面板 header/nav 固定顶部，只有内容滚动） */
@@ -242,12 +248,17 @@
      不得隐藏（用户明确要求：看起来与网页端完全一致）。
      注意：工具行挂在 composerStack 下（不一定带 composerHero 类），
      用 composerSeat 祖先限定最稳。 */
+  [class$="_composerSeat"] [class$="_row"],
   [class$="_composerSeat"] [class$="_tools"],
   [class$="_composerSeat"] [class$="_modes"],
   [class$="_composerSeat"] [class$="_trailing"],
   [class$="_composerSeat"] [class$="_heroWorkspaceRow"] {
     flex-wrap: wrap !important;
-    min-width: 0 !important;
+    /* min-width 用 min-content：0 会被同行按钮压缩到 23px（工具行塌缩）；
+       fit-content 在 flex 里解析为 max-content（不换行）会撑爆整行。
+       min-content 允许内部换行，最小宽 = 最宽不可断词（按钮 44px）。
+       row 本身 nowrap → 子项总和 305px 溢出 13px，一并 wrap */
+    min-width: min-content !important;
   }
   [class$="_heroGlow"] [class$="_headline"] {
     padding: 10px 0 4px !important;
@@ -265,6 +276,70 @@
     min-height: 0 !important;
     display: none !important;
   }
+  /* ── 4b. composer 弹出菜单弹窗化（命令菜单/模型菜单/权限菜单） ──
+     官方 absolute 菜单锚定桌面坐标——命令菜单（加号）实测打开后出现在
+     页面顶部 y=39（与触发按钮脱节，用户"点不开"的真相）；模型/权限菜单
+     锚定在按钮附近但真机 WebView 渲染偏差风险相同。
+     统一改为 fixed 居中弹窗（手机端常规形态），内容超高时菜单内滚动 */
+  [class$="_composerSeat"] [class$="_menu"] {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    /* height: fit-content 必须：官方菜单高度动画对「无显式 height 的
+       top:50% 定位元素」会塌陷成 0（实测：去掉即 h=10 内容不可见） */
+    height: fit-content !important;
+    z-index: 100 !important;
+    max-width: calc(100vw - 48px) !important;
+    max-height: calc(100dvh - 96px) !important;
+    max-height: calc(100vh - 96px) !important;
+    overflow-y: auto !important;
+    border-radius: 16px !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  /* ── 3h. 设置面板插件 tab：flex 子项收缩（修横向溢出） ──
+     实测溢出链：options(366) > section(318) > cards(366 撑开 48px)。
+     flex 子项 min-width:auto 不收缩导致 options 需横向滑动 24px。
+     仅限定 options 内（_card 等类在消息区也有，不误伤） */
+  [class$="_panel"] [class$="_options"] [class$="_section"],
+  [class$="_panel"] [class$="_options"] [class$="_cards"],
+  [class$="_panel"] [class$="_options"] [class$="_card"],
+  [class$="_panel"] [class$="_options"] [class$="_header"],
+  [class$="_panel"] [class$="_options"] [class$="_row"] {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    flex: 1 1 auto !important;
+  }
+
+  /* ── 4c. 手机端字体放大（用户实测偏小拥挤） ──
+     官方基础字号 13-14px 面向桌面；手机视口下主要文本统一上调 1px、
+     行高同步放宽。与网页端功能无关，仅字号。 */
+  [class$="_message"] [class$="_bubble"],
+  [class$="_messageBody"],
+  [class$="_turn"] [class$="_card"] {
+    font-size: 17px !important;
+    line-height: 26px !important;
+  }
+  [class$="_listArea"] [class$="_item"],
+  [class$="_listArea"] [class$="_row"],
+  [class$="_listArea"] [class$="_entry"] {
+    font-size: 17px !important;
+    line-height: 25px !important;
+  }
+  [class$="_topbar"],
+  [class$="_headerRow"],
+  [class$="_conversationHeader"] {
+    font-size: 17px !important;
+  }
+  [class$="_composerSeat"] button {
+    font-size: 15px !important;
+  }
+  [class$="_panel"] {
+    font-size: 15px !important;
+  }
+
   /* ── 5. 触控目标放大（DeepSeek token：--dsl-button-border-radius:4096px 全胶囊） ── */
   button {
     min-height: 44px !important;
@@ -287,8 +362,8 @@
   [class$="_listArea"] [class$="_row"],
   [class$="_listArea"] [class$="_entry"] {
     padding: 10px 12px !important;
-    font-size: 16px !important;
-    line-height: 24px !important;
+    font-size: 17px !important;
+    line-height: 25px !important;
     border-radius: 16px !important;
     min-height: 44px !important;
   }
@@ -297,8 +372,8 @@
   [class$="_messageBody"],
   [class$="_turn"] [class$="_card"] {
     border-radius: 22px !important;
-    font-size: 16px !important;
-    line-height: 24px !important;
+    font-size: 17px !important;
+    line-height: 26px !important;
   }
   /* ── 8. 顶栏：DeepSeek 源码 height:60px + 安全区（._2c74d7a / ._08dce46） ── */
   [class$="_topbar"],
