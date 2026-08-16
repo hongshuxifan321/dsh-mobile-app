@@ -11,16 +11,3 @@ captures/
 
 # 密钥文件（勿提交）
 server/tools/dsh-config.txt
-
-# iOS (XcodeGen 生成，不提交)
-ios/build/
-ios/DerivedData/
-ios/*.xcodeproj
-ios/*.xcworkspace
-
-# HarmonyOS (DevEco 构建产物)
-harmonyos/.hvigor/
-harmonyos/build/
-harmonyos/entry/build/
-harmonyos/.idea/
-harmonyos/**/oh_modules/
