@@ -75,6 +75,18 @@ https://<你的固定域名>/mobile   ← 你电脑上的 mobile-remote 认证�
 gradle assembleDebug   # 输出 app/build/outputs/apk/debug/app-debug.apk
 ```
 
+## 文档导航
+
+| 文档 | 内容 |
+|---|---|
+| [README.md](./README.md) | 项目总览 |
+| [DEPLOY.md](./DEPLOY.md) | 完整部署指南 |
+| [docs/QUICKSTART.md](./docs/QUICKSTART.md) | 极简部署教程 |
+| [docs/PWA-INSTALL.md](./docs/PWA-INSTALL.md) | 把 PWA 添加到主屏幕 |
+| [docs/BOUNDARIES.md](./docs/BOUNDARIES.md) | 使用边界与拓展方向 |
+| [CHANGELOG.md](./CHANGELOG.md) | 更新日志 |
+| [LICENSE](./LICENSE) | MIT 许可证 |
+
 ## 使用边界与拓展
 
 当前版本的局限、拓展方向、开发者说明，见：
