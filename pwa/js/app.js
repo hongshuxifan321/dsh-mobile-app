@@ -6,7 +6,7 @@
   const settings = {
     url: localStorage.getItem('dsh_url') || '',
     user: localStorage.getItem('dsh_user') || '',
-    pass: localStorage.getItem('dsh_pass') || ''
+    pass: ''
   };
 
   const els = {
@@ -64,7 +64,6 @@
       if (pass) settings.pass = pass;
       localStorage.setItem('dsh_url', settings.url);
       localStorage.setItem('dsh_user', settings.user);
-      if (pass) localStorage.setItem('dsh_pass', settings.pass);
     }
 
     hideSettings();
