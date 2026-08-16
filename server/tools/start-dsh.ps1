@@ -95,7 +95,7 @@ if (Test-Path $PATCH_SCRIPT) {
     }
   } else {
     Write-Host ("[patch] FAILED: " + ($patchOut | Out-String).Trim()) -ForegroundColor Red
-    Write-Host '[patch] plugin config cards may be unavailable. DSH changed client.js layout? See HANDOFF pit 23' -ForegroundColor Yellow
+    Write-Host '[patch] plugin config cards may be unavailable. DSH changed client.js layout? See CLAUDE.md pit 23' -ForegroundColor Yellow
   }
 } else {
   Write-Host '[patch] apply-isloopback-patch.ps1 missing (app-android gone?), skipping patch check' -ForegroundColor DarkGray

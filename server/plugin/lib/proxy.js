@@ -4,7 +4,7 @@
 //   - Host/Origin 统一改写为 127.0.0.1:upstreamPort（loopback 伪装）——DSH 官方把
 //     settings/credentials 等特权方法锁 loopback，改写后远程可用；隧道域名每次重启
 //     会变，改写后 DSH 端也无需跟随更新。⚠️不要改回 dsh.remote 方案（设置保存 403、
-//     内测声明弹窗关不掉，已两次踩坑，见 HANDOFF 坑 4）。安全模型：密码是唯一边界。
+//     内测声明弹窗关不掉，已两次踩坑，见 CLAUDE.md 坑 4）。安全模型：密码是唯一边界。
 //   - /mobile 302 → /（自研移动 UI 已废弃，官方 UI + 适配 CSS 方案）
 //   - WS 升级只放行 /api/events.{mux,host}（收窄转发面）
 import { createServer, request as httpRequest } from 'node:http'
