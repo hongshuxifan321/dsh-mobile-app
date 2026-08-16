@@ -86,7 +86,16 @@
 >   start-dsh.ps1 不在则拉起；全杀进程实测 60s 内自动恢复全链路）。
 >   两条都做 = 进程被外部杀掉也会自动复活。
 
-## 七、手机端
+## 七、PWA 通用客户端（iPhone / 鸿蒙 / 其他平台）
+
+除了 Android APK，本仓库还提供 PWA 通用客户端：
+
+- 地址：<https://hongshuxifan321.github.io/dsh-mobile-app/pwa/>
+- 用户打开后填写自己的 DSH 服务器地址 / 用户名 / 密码即可连接
+- 支持裸域名自动发现隧道（如 `your-domain.de5.net`）
+- 详细说明见 [`pwa/README.md`](./pwa/README.md)
+
+## 八、Android 手机端
 
 1. 构建 APK（见 `app-android/README.md`，GitHub Actions 自动构建）；
 2. 手机安装 APK；

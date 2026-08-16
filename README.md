@@ -6,6 +6,18 @@ DeepSeek Harness 的手机客户端：全屏 WebView 加载你自己电脑上 DS
 
 > 服务器端需要部署 [dsh-plugin-mobile-remote](https://github.com/hongshuxifan321/dsh-mobile-app)（含 `/mobile` 界面 + 认证代理 + 隧道脚本），见 [DEPLOY.md](./DEPLOY.md)。
 
+## PWA 通用客户端（iPhone / 鸿蒙 / 其他平台）
+
+除了 Android APK，本仓库还提供一个 **PWA 通用客户端**，适用于 iPhone、鸿蒙等无法直接安装 APK 的平台。
+
+- PWA 地址：<https://hongshuxifan321.github.io/dsh-mobile-app/pwa/>
+- 用户打开后填写自己的 DSH 服务器地址 / 用户名 / 密码即可连接
+- 支持裸域名自动发现隧道（如 `your-domain.de5.net`）
+- 支持深色 / 浅色切换
+- 密码仅保存在当前页面内存中，不持久化
+- 详细说明见 [`pwa/README.md`](./pwa/README.md)
+
+
 ## 原理
 
 ```
