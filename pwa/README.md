@@ -22,6 +22,9 @@
    https://hongshuxifan321.github.io/dsh-mobile-app/pwa/
    ```
 
+> ✅ 已启用 GitHub Pages，当前可直接访问：
+> https://hongshuxifan321.github.io/dsh-mobile-app/pwa/
+
 ## 使用
 
 1. 打开 PWA 地址
