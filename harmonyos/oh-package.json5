@@ -1,0 +1,9 @@
+{
+  "name": "dsh_remote",
+  "version": "1.0.0",
+  "description": "DSH Remote HarmonyOS client",
+  "main": "",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {}
+}

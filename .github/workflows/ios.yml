@@ -1,0 +1,37 @@
+name: Build iOS
+
+on:
+  push:
+    paths:
+      - 'ios/**'
+      - '.github/workflows/ios.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: Build for iOS Simulator (no signing)
+        working-directory: ios
+        run: |
+          xcodebuild -project DSHRemote.xcodeproj \
+            -scheme DSHRemote \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO build
+
+      - name: Upload .app artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: dsh-remote-ios-simulator
+          path: ios/build/Build/Products/Debug-iphonesimulator/DSHRemote.app
