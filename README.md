@@ -74,3 +74,9 @@ https://<你的固定域名>/mobile   ← 你电脑上的 mobile-remote 认证�
 ```bash
 gradle assembleDebug   # 输出 app/build/outputs/apk/debug/app-debug.apk
 ```
+
+## 使用边界与拓展
+
+当前版本的局限、拓展方向、开发者说明，见：
+
+- [docs/BOUNDARIES.md](./docs/BOUNDARIES.md)
