@@ -63,10 +63,12 @@ jobs:
           path: ${{ runner.temp }}/dsh-release.keystore
 
       # 每次构建成功都自动发布到 Releases 页：用户始终可通过 Release 下载最新 APK
+      # 使用带版本号的 APK 文件名，避免下载管理器/文件管理器因同名文件缓存旧图标
       - name: Publish GitHub Release
         run: |
-          gh release create "v$(date +%Y%m%d-%H%M%S)" \
-            app/build/outputs/apk/release/app-release.apk \
+          VERSION="v$(date +%Y%m%d-%H%M%S)"
+          cp app/build/outputs/apk/release/app-release.apk "DSH-Remote-$VERSION.apk"
+          gh release create "$VERSION" "DSH-Remote-$VERSION.apk" \
             --title "DSH Remote ${{ github.run_number }}" \
             --notes "Android APK — 手机直接下载安装（需允许安装未知来源）"
         env:
