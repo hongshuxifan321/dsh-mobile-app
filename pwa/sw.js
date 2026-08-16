@@ -1,4 +1,4 @@
-const CACHE = 'dsh-remote-pwa-v2';
+const CACHE = 'dsh-remote-pwa-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -27,14 +27,33 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
+  const request = event.request;
+  if (request.method !== 'GET') return;
+
+  // 页面导航：优先网络，确保拿到最新 HTML
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE).then((cache) => cache.put(request, copy));
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // 静态资源：缓存优先，失败回退缓存
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const fetched = fetch(event.request).then((response) => {
-        const copy = response.clone();
-        caches.open(CACHE).then((cache) => cache.put(event.request, copy));
-        return response;
-      }).catch(() => cached);
+    caches.match(request).then((cached) => {
+      const fetched = fetch(request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE).then((cache) => cache.put(request, copy));
+          return response;
+        })
+        .catch(() => cached);
       return cached || fetched;
     })
   );
