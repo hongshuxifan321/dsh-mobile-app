@@ -147,3 +147,59 @@ main {
   color: #888;
   margin: 4px 0 0;
 }
+
+/* 顶部按钮组 */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 浅色模式 */
+:root[data-theme="light"] {
+  --bg: #ffffff;
+  --fg: #000000;
+  --muted: #555555;
+  --border: #dddddd;
+  --accent: #000000;
+}
+
+:root[data-theme="light"] .topbar {
+  background: #ffffff;
+  border-bottom-color: #dddddd;
+}
+
+:root[data-theme="light"] .title {
+  color: #000000;
+}
+
+:root[data-theme="light"] .btn {
+  background: #f0f0f0;
+  color: #000000;
+  border-color: #cccccc;
+}
+
+:root[data-theme="light"] .btn.primary {
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+:root[data-theme="light"] .modal-content {
+  background: #ffffff;
+  border-color: #dddddd;
+}
+
+:root[data-theme="light"] .modal-content input {
+  background: #ffffff;
+  color: #000000;
+  border-color: #dddddd;
+}
+
+:root[data-theme="light"] .modal-content label {
+  color: #555555;
+}
+
+:root[data-theme="light"] #dshFrame {
+  background: #ffffff;
+}

@@ -15,6 +15,7 @@
     dshFrame: $('dshFrame'),
     connectBtn: $('connectBtn'),
     settingsBtn: $('settingsBtn'),
+    themeBtn: $('themeBtn'),
     settingsModal: $('settingsModal'),
     serverUrl: $('serverUrl'),
     serverUser: $('serverUser'),
@@ -23,6 +24,23 @@
     saveBtn: $('saveBtn'),
     status: $('status')
   };
+
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    els.themeBtn.textContent = theme === 'light' ? '深色' : '浅色';
+    localStorage.setItem('dsh_theme', theme);
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+    applyTheme(current === 'light' ? 'dark' : 'light');
+  }
+
+  function initTheme() {
+    const saved = localStorage.getItem('dsh_theme');
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    applyTheme(saved || (prefersLight ? 'light' : 'dark'));
+  }
 
   function showSettings() {
     els.serverUrl.value = settings.url;
@@ -53,38 +71,80 @@
     connect();
   }
 
-  function connect() {
+  async function dohResolve(host) {
+    const q = encodeURIComponent(host);
+    const url = 'https://dns.alidns.com/resolve?name=' + q + '&type=TXT';
+    const resp = await fetch(url, { headers: { 'Accept': 'application/dns-json' } });
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    const answers = data.Answer || [];
+    for (const a of answers) {
+      if ((a.type === 5 || a.type === 16) && a.data && a.data.includes('trycloudflare.com')) {
+        return a.data.replace(/\.$/, '').trim();
+      }
+    }
+    return null;
+  }
+
+  async function resolveTarget(input) {
+    let url = input.trim();
+    if (!url) return null;
+
+    // 已经是完整地址
+    if (/^https?:\/\//i.test(url)) {
+      return url;
+    }
+
+    // 裸域名：走 DoH 自动发现当前隧道
+    const host = url.replace(/^\/+/, '').replace(/\/+$/, '');
+    els.status.textContent = '自动发现中…';
+    const tunnel = await dohResolve(host);
+    if (tunnel) {
+      return 'https://' + tunnel + '/mobile';
+    }
+    return null;
+  }
+
+  async function connect() {
     if (!settings.url) {
       els.status.textContent = '请先配置服务器地址';
       showSettings();
       return;
     }
 
+    const target = await resolveTarget(settings.url);
+    if (!target) {
+      els.status.textContent = '自动发现失败，请填写完整 https:// 地址';
+      return;
+    }
+
     // 先通过弹窗完成一次 Basic Auth，让浏览器缓存该域名的登录凭证
-    const authWindow = window.open(settings.url, '_blank');
+    const authWindow = window.open(target, '_blank');
     if (authWindow) {
       els.status.textContent = '请在弹窗中完成登录，然后回到这里';
       setTimeout(() => {
-        authWindow.close();
-        loadFrame();
+        try { authWindow.close(); } catch (e) {}
+        loadFrame(target);
       }, 3000);
     } else {
-      // 弹窗被拦截时，直接在当前页尝试 iframe（可能要求手动登录）
-      loadFrame();
+      loadFrame(target);
     }
   }
 
-  function loadFrame() {
+  function loadFrame(target) {
     els.connectView.classList.add('hidden');
     els.frameView.classList.remove('hidden');
-    els.dshFrame.src = settings.url;
+    els.dshFrame.src = target;
     els.status.textContent = '';
   }
 
   els.connectBtn.addEventListener('click', connect);
   els.settingsBtn.addEventListener('click', showSettings);
+  els.themeBtn.addEventListener('click', toggleTheme);
   els.cancelBtn.addEventListener('click', hideSettings);
   els.saveBtn.addEventListener('click', saveSettings);
+
+  initTheme();
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(function () {});

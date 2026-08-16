@@ -14,7 +14,10 @@
   <div id="app">
     <header class="topbar">
       <span class="title">DSH Remote</span>
-      <button id="settingsBtn" class="btn">设置</button>
+      <div class="topbar-actions">
+        <button id="themeBtn" class="btn">浅色</button>
+        <button id="settingsBtn" class="btn">设置</button>
+      </div>
     </header>
 
     <main id="main">
@@ -49,7 +52,7 @@
         <button id="cancelBtn" class="btn">取消</button>
         <button id="saveBtn" class="btn primary">保存并连接</button>
       </div>
-      <p class="hint">首次连接会弹出浏览器登录框，输入上面的用户名/密码后即可。</p>
+      <p class="hint">支持填写裸域名（如 dshremote.de5.net）自动发现隧道；也可填完整 https:// 地址。首次连接会弹出浏览器登录框。</p>
     </div>
   </div>
 

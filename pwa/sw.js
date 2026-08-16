@@ -1,4 +1,4 @@
-const CACHE = 'dsh-remote-pwa-v1';
+const CACHE = 'dsh-remote-pwa-v2';
 const ASSETS = [
   './',
   './index.html',
