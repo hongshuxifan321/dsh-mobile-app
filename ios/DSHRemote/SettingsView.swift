@@ -1,4 +1,14 @@
 import SwiftUI
+import Security
+
+private func keychainSave(_ value: String, forKey key: String) {
+    let data = Data(value.utf8)
+    let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
+                                kSecAttrAccount as String: key,
+                                kSecValueData as String: data]
+    SecItemDelete(query as CFDictionary)
+    SecItemAdd(query as CFDictionary, nil)
+}
 
 struct SettingsView: View {
     @Binding var urlString: String
@@ -32,7 +42,7 @@ struct SettingsView: View {
                     Button("保存并连接") {
                         UserDefaults.standard.set(urlString.trimmingCharacters(in: .whitespaces), forKey: "serverURL")
                         UserDefaults.standard.set(username.trimmingCharacters(in: .whitespaces), forKey: "username")
-                        UserDefaults.standard.set(password, forKey: "password")
+                        keychainSave(password, forKey: "password")
                         onSave()
                         dismiss()
                     }

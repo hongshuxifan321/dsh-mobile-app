@@ -1,9 +1,21 @@
 import SwiftUI
+import Security
+
+private func keychainLoad(forKey key: String) -> String? {
+    let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
+                                kSecAttrAccount as String: key,
+                                kSecReturnData as String: true,
+                                kSecMatchLimit as String: kSecMatchLimitOne]
+    var result: AnyObject?
+    guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
+          let data = result as? Data else { return nil }
+    return String(data: data, encoding: .utf8)
+}
 
 struct ContentView: View {
     @State private var urlString = UserDefaults.standard.string(forKey: "serverURL") ?? ""
     @State private var username = UserDefaults.standard.string(forKey: "username") ?? "dsh"
-    @State private var password = UserDefaults.standard.string(forKey: "password") ?? ""
+    @State private var password = keychainLoad(forKey: "password") ?? ""
     @State private var showSettings = false
     @State private var loaded = false
 
