@@ -62,11 +62,10 @@ jobs:
           name: release-keystore
           path: ${{ runner.temp }}/dsh-release.keystore
 
-      # 手动触发(Run workflow)时自动发布到 Releases 页：手机直接打开 Release 页下载 APK
+      # 每次构建成功都自动发布到 Releases 页：用户始终可通过 Release 下载最新 APK
       - name: Publish GitHub Release
-        if: github.event_name == 'workflow_dispatch'
         run: |
-          gh release create "v$(date +%Y%m%d-%H%M)" \
+          gh release create "v$(date +%Y%m%d-%H%M%S)" \
             app/build/outputs/apk/release/app-release.apk \
             --title "DSH Remote ${{ github.run_number }}" \
             --notes "Android APK — 手机直接下载安装（需允许安装未知来源）"
