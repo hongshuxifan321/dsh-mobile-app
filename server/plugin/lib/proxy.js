@@ -73,10 +73,9 @@ const RAIL_TOGGLE_SCRIPT = '<script data-dsh-rail-toggle>(function(){' +
   'b.className="dsh-rail-toggle";' +
   'b.setAttribute("aria-label","工具列开合");' +
   'b.innerHTML="\\u00bb";' +
-  'b.onclick=function(){var cur=localStorage.getItem(K)==="1";var nx=!cur;apply(nx);localStorage.setItem(K,nx?"1":"0")};' +
+  'b.onclick=function(){apply(!document.body.classList.contains(K))};' +
   'document.body.appendChild(b);' +
-  'var saved=localStorage.getItem(K)==="1";' +
-  'apply(saved)' +
+  'apply(false)' +
   '}' +
   'if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",boot)}else{boot()}' +
   '})()<\/script>'

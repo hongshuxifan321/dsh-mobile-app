@@ -86,6 +86,14 @@
   body:not(.dsh-rail-visible) [class$="_sidebarCol"],
   body:not(.dsh-rail-visible) [class$="_sidebarCol"]:has([class$="_root"]:not([class$="_collapsed"])) {
     visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  /* 收起态连带隐藏栏内所有图标/内容（防个别元素带动画或穿透泄漏为残留 icon） */
+  body:not(.dsh-rail-visible) [class$="_sidebarCol"] * {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
   body.dsh-rail-visible [class$="_sidebarCol"] {
     visibility: visible !important;
