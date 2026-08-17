@@ -11,3 +11,13 @@ captures/
 
 # 密钥文件（勿提交）
 server/tools/dsh-config.txt
+
+# 运行时产物（勿提交）
+server/tools/*.log
+server/tools/*.log.out
+server/tools/last-phone-url.txt
+
+# 截图等临时文件
+*.png
+*.jpg
+Screenshot_*

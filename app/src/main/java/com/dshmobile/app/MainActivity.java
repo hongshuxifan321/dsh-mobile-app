@@ -62,8 +62,12 @@ public class MainActivity extends Activity {
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
-        s.setLoadWithOverviewMode(true);
-        s.setUseWideViewPort(true);
+        // ⚠️ 不要 open with overview / wide viewport：会强制 WebView 用「桌面宽度」做
+        // layout viewport（~980dp）并忽略服务器注入的 width=device-width meta
+        // （见 proxy.js injectViewportMeta）。后果是手机上 CSS 的 @media (max-width:640px)
+        // 手机适配规则永不命中 → 手机渲染成缩小版桌面 UI（平板宽屏看着正常）。
+        // WebView 默认（false/false）会直接遵循 meta 的 width=device-width，
+        // 窄屏手机命中手机规则、宽屏平板保持官方桌面布局，两端都正确。
         s.setSupportZoom(false);
         s.setBuiltInZoomControls(false);
         s.setMediaPlaybackRequiresUserGesture(false);

@@ -82,7 +82,7 @@ if (-not (Get-NetTCPConnection -LocalPort 3080 -State Listen -ErrorAction Silent
 
 # 1.5) ensure the isLoopback frontend patch survives DSH upgrades (idempotent:
 #      already-applied -> skip; DSH changed client.js -> loud failure, no blind overwrite)
-$PATCH_SCRIPT = Join-Path $PSScriptRoot '..\app-android\server\tools\apply-isloopback-patch.ps1'
+$PATCH_SCRIPT = Join-Path $PSScriptRoot 'apply-isloopback-patch.ps1'
 if (Test-Path $PATCH_SCRIPT) {
   $patchOut = & powershell -NoProfile -ExecutionPolicy Bypass -File $PATCH_SCRIPT 2>&1
   if ($LASTEXITCODE -eq 0) {
@@ -120,7 +120,7 @@ while ($true) {
 
   Remove-Item $LOG -ErrorAction SilentlyContinue
   Remove-Item "$LOG.out" -ErrorAction SilentlyContinue
-  $proc = Start-Process -FilePath $CF -ArgumentList 'tunnel','--url','http://127.0.0.1:8082' `
+  $proc = Start-Process -FilePath $CF -ArgumentList 'tunnel','--url','http://127.0.0.1:8082','--protocol','http2' `
     -WindowStyle Hidden -RedirectStandardError $LOG -RedirectStandardOutput "$LOG.out" -PassThru
   $tunnelDomain = ''
   $healthTick = 0

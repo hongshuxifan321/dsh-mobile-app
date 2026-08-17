@@ -54,6 +54,37 @@ function injectViewportMeta(html) {
   return replaced !== html ? replaced : html.replace('</head>', meta + '</head>')
 }
 
+/**
+ * 侧边栏 52px 工具列的独立显隐开关（仅手机端生效）。
+ * 官方窄屏侧边栏只有 52px(rail)⟷280px(抽屉) 两态，没有「52px 列本身收起」状态，
+ * 故在页面注入一段 JS，动态加一个常驻左缘的窄把手按钮 `.dsh-rail-toggle`：
+ *   点它 → toggle `body.dsh-rail-visible` 类 + localStorage 持久状态，
+ *   CSS 据此把 `_sidebarCol` 在 0⟷52px 间切换（见 mobile-inject.css）。
+ * 与官方「鱼」按钮（52⟷280）相互独立。幂等：HTML 已含该 script 则跳过。
+ */
+const RAIL_TOGGLE_SCRIPT = '<script data-dsh-rail-toggle>(function(){' +
+  'if(typeof window==="undefined"||window.innerWidth>640){return}' +
+  'var K="dsh-rail-visible";' +
+  'function apply(v){document.body.classList.toggle(K,!!v)}' +
+  'function boot(){' +
+  'if(document.getElementById("dsh-rail-toggle-btn")){return}' +
+  'var b=document.createElement("button");' +
+  'b.id="dsh-rail-toggle-btn";' +
+  'b.className="dsh-rail-toggle";' +
+  'b.setAttribute("aria-label","工具列开合");' +
+  'b.innerHTML="\\u00bb";' +
+  'b.onclick=function(){var cur=localStorage.getItem(K)==="1";var nx=!cur;apply(nx);localStorage.setItem(K,nx?"1":"0")};' +
+  'document.body.appendChild(b);' +
+  'var saved=localStorage.getItem(K)==="1";' +
+  'apply(saved)' +
+  '}' +
+  'if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",boot)}else{boot()}' +
+  '})()<\/script>'
+function injectRailToggle(html) {
+  if (html.includes('data-dsh-rail-toggle')) return html
+  return html.replace('</head>', RAIL_TOGGLE_SCRIPT + '</head>')
+}
+
 export function createAuthProxy({ port, upstreamPort, user = 'dsh', password, onError = () => {} }) {
   const upstream = { host: '127.0.0.1', port: upstreamPort }
 
@@ -163,7 +194,7 @@ export function createAuthProxy({ port, upstreamPort, user = 'dsh', password, on
           upRes.setEncoding('utf8')
           upRes.on('data', (chunk) => { htmlBody += chunk })
           upRes.on('end', () => {
-            const patched = injectViewportMeta(injectWsAuth(injectMobileCss(htmlBody)))
+            const patched = injectViewportMeta(injectWsAuth(injectRailToggle(injectMobileCss(htmlBody))))
             const h = { ...upRes.headers }
             delete h['content-length']
             // HTML 内含注入的适配 CSS/viewport meta——禁止设备缓存旧版（WebView/浏览器

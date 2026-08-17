@@ -60,6 +60,63 @@
     grid-column: 1 / -1 !important;
   }
 
+  /* ── 3c2. 52px 工具列独立显隐开关（配合 proxy.js 注入的 .dsh-rail-toggle）──
+     官方窄屏只有 52px(rail)⟷280px(抽屉) 两态，没有「52px 列收起/露出」独立状态。
+     注入脚本维护 body.dsh-rail-visible：无该类=列收起（默认），有=露出 52px 列。
+     【根因（已查明）】frame 是 3 列 grid，子项按 DOM 顺序自动放置到
+     第1列(sidebar)→第2列(center)→第3列(details)。一旦 sidebarCol 脱离 grid
+     （position:fixed/absolute）或被 display:none，自动放置就变成：
+       第1列(0px) ← centerCol(对话页)、第2列(满宽) ← detailsCol(详情面板)
+     → 对话页消失、白底详情面板("点击消息流中的工具行查看详情")全屏盖住整页。
+     【修复】sidebarCol 永远保持 grid 子项（不脱离、不 display:none）：
+     - frame 轨道恒 0 minmax(0,1fr) 0：center 满宽【不移动】，details 隐藏；
+     - sidebarCol 恒 position:relative + width:52px（grid 子项，轨道 0 内
+       向右溢出盖在 center 左缘，z-index 60 浮于其上——悬浮但不脱离）；
+     - 收起用 visibility:hidden（仍在 grid 占位 → 自动放置永不变乱），
+       露出 visibility:visible。
+     鱼(展开 280 抽屉)由下方 3c 的 :has 规则接管（specificity 更高 → 悬浮 280）。 */
+  [class$="_frame"] {
+    grid-template-columns: 0 minmax(0, 1fr) 0 !important;
+  }
+  [class$="_sidebarCol"] {
+    position: relative !important;
+    width: 52px !important;
+    z-index: 60 !important;
+  }
+  body:not(.dsh-rail-visible) [class$="_sidebarCol"],
+  body:not(.dsh-rail-visible) [class$="_sidebarCol"]:has([class$="_root"]:not([class$="_collapsed"])) {
+    visibility: hidden !important;
+  }
+  body.dsh-rail-visible [class$="_sidebarCol"] {
+    visibility: visible !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22) !important;
+  }
+  /* 注入的开关按钮：常驻、融入工具列、触控友好。收起时放屏幕左上角，露出时随列右移。 */
+  .dsh-rail-toggle {
+    position: fixed !important;
+    left: 8px !important;
+    top: calc(env(safe-area-inset-top, 0px) + 8px) !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: var(--dsw-specific-sidebar-fill, rgba(15, 18, 26, 0.72)) !important;
+    color: var(--dsw-alias-label-secondary, #fff) !important;
+    border: 1px solid var(--dsw-alias-border-l2-darkmode-thin, rgba(255, 255, 255, 0.22)) !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    z-index: 70 !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28) !important;
+    padding: 0 !important;
+  }
+  /* 列露出时按钮随列右移，贴在 52px 列右缘外侧（不遮列内鲸鱼 logo） */
+  body.dsh-rail-visible .dsh-rail-toggle {
+    left: 60px !important;
+  }
+
   /* ── 3d. 设置面板：手机端上下布局 ──
      官方面板是左右两列（nav 188px + content 154px），390px 屏上内容列
      净宽只剩 ~98px——设置项文字全部溢出（视觉上像竖排）。
@@ -211,16 +268,14 @@
     overscroll-behavior-x: contain !important;
     min-width: 0 !important;
   }
-  /* 输入栏上方的会话统计条（"2 轮 · 2 步 | LLM 8.1s | 缓存命中 91% | 输入 18.9K tok…"）：
-     官方 nowrap + ellipsis 截断，手机上只剩省略号——改横向滚动完整可读。
-     注意：composerSeat 内的 _root 同时命中输入卡（uV2eYG_root），其 overflow-x: auto 无副作用 */
-  [class$="_composerSeat"] [class$="_root"] {
-    white-space: nowrap !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    text-overflow: clip !important;
-    overscroll-behavior-x: contain !important;
-  }
+  /* 输入栏上方的会话统计条："2 轮 · 2 步 | LLM 8.1s | 缓存命中…"
+     此条原本想改横向滚动看完整，但 `[class$="_composerSeat"] [class$="_root"]`
+     会同时命中权限菜单 Menu 的包裹 `_root`，其 overflow-y:hidden 会把向上
+     弹出的权限菜单顶部裁掉（实测 Workspace/Full access/Read only 上面选项
+     看不到）。权限菜单可用性优先：撤销这条宽泛规则，统计条退回应用原生
+     nowrap+ellipsis（桌面端行为一致），权限菜单不再被该容器裁剪。
+     注意：composerSeat 内的 `_root` 同时命中输入卡（uV2eYG_root），撤销后
+     一并回归原生，输入卡无副作用。 */
   [class$="_scrollBody"] pre,
   [class$="_scrollBody"] code {
     white-space: pre !important;
@@ -325,6 +380,38 @@
     font-size: 15px !important;
   }
 
+  /* ── 4d. 对话底部输入框压缩（保留全部控件，仅收高度/间距） ──
+     背景：官方 _card 高 = textarea区(mirror行高) + 工具行(_row) + 卡片间距。
+     工具行被第5节全局 button{min-height:44px} 撑高是主因；textarea 是
+     position:absolute inset:0（高由 mirror 决定），故原 min-height:42px 无效。
+     本段仅压缩几何，不隐藏任何控件；主发送按钮单独保持 44px 触控目标。 */
+  [class$="_composerSeat"] [class$="_row"] {
+    padding: 2px 6px 4px !important;
+    gap: 8px !important;
+  }
+  [class$="_composerSeat"] [class$="_tools"] button,
+  [class$="_composerSeat"] [class$="_modes"] button,
+  [class$="_composerSeat"] [class$="_trailing"] button:not([class$="_primary"]) {
+    min-height: 36px !important;
+  }
+  [class$="_composerSeat"] [class$="_primary"] {
+    min-height: 44px !important;
+  }
+  [class$="_composerSeat"] [class$="_card"] {
+    gap: 6px !important;
+    padding-top: 6px !important;
+  }
+  [class$="_composerSeat"] textarea,
+  [class$="_composerSeat"] [contenteditable="true"] {
+    line-height: 22px !important;
+  }
+  [class$="_composerSeat"] [class$="_root"] {
+    padding-bottom: 4px !important;
+  }
+  [class$="_composerStack"] {
+    gap: 4px !important;
+  }
+
   /* ── 5. 触控目标放大（DeepSeek token：--dsl-button-border-radius:4096px 全胶囊） ── */
   button {
     min-height: 44px !important;
@@ -360,13 +447,52 @@
     font-size: 17px !important;
     line-height: 26px !important;
   }
-  /* ── 8. 顶栏：DeepSeek 源码 height:60px + 安全区（._2c74d7a / ._08dce46） ── */
+  /* ── 8. 顶栏：去掉安全区留白（内容顶到屏幕顶部，与原生 App 一致） ── */
   [class$="_topbar"],
   [class$="_headerRow"],
   [class$="_conversationHeader"] {
-    min-height: calc(env(safe-area-inset-top, 0px) + 60px) !important;
-    padding: calc(env(safe-area-inset-top, 0px)) 12px 0 !important;
+    padding: 0 12px !important;
     box-sizing: border-box !important;
+  }
+  /* ── 8b. 顶栏精简：隐藏 Session log 按钮和会话描述文本（手机上非必要） ── */
+  [class$="_sessionLogButton"] {
+    display: none !important;
+  }
+  [class$="_label"] {
+    display: none !important;
+  }
+  /* ── 8c. 隐藏当前会话名字（crumbCurrent） ──
+     会话名字由 dsh 的 ConversationSessionHeader 以面包屑导航渲染：
+     nav._crumbs → span._crumbSeg → button._crumb（当前会话为 ._crumbCurrent，
+     且 disabled=true，代表本会话标题）。
+     仅隐藏 _crumbCurrent（当前会话名字），保留上级会话面包屑与顶栏其他控件；
+     不用 _crumb 是因为它同时命中上级面包屑，会误藏导航。
+     注意 dsh 顶栏会话头实际类名是 _header/_titleRow/_titleCluster（wSkVaW_*），
+     与旧版 _conversationHeader 命名不同——此处不依赖容器类，直接用后缀命中。 */
+  [class$="_crumbCurrent"] {
+    display: none !important;
+  }
+  /* ── 8d. 顶栏视图标签（tab）精简："对话/轨迹"等标签占用空间过大 ──
+     官方 .wSkVaW_tabs：gap:36px、margin-top:4px、padding-left:8px；每个
+     .wSkVaW_tab：padding:0 0 11px（底部 11px 把顶栏撑高）。手机端缩小
+     标签间距与内边距，省下垂直/横向空间。
+     对齐坑：激活 tab 的 class 以 _tabActive 结尾（非 _tab），
+     `[class$="_tab"]` 只命中非激活项 → 曾导致激活/非激活 tab 高度不一致。
+     改用 `[class$="_tabs"] button` 同命中两者（容器内只有 tab 按钮）。 */
+  [class$="_tabs"] {
+    gap: 20px !important;
+    margin-top: 2px !important;
+    padding-left: 4px !important;
+  }
+  [class$="_tabs"] button {
+    padding: 0 0 6px !important;
+    line-height: 16px !important;
+  }
+  /* ── 8e. 顶栏底部横线加粗："对话/轨迹"下方横贯的 1px 分隔线改高 ──
+     该线是会话 header 的 ::after（.wSkVaW_header:after，height:1px,
+     absolute bottom:1px）。用含 _tabs 的 header 精确命中，把 height 1px→3px。 */
+  [class$="_header"]:has([class$="_tabs"])::after {
+    height: 3px !important;
   }
 }
 

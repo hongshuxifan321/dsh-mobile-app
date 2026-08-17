@@ -34,7 +34,7 @@ if (-not $content.Contains($old)) {
   exit 1
 }
 
-$new = $old + ' || true, // [DSH Remote patch]'
+$new = 'isLoopback: pageLocation === void 0 || isLoopbackHostname(pageLocation.hostname) || true, // [DSH Remote patch]'
 Set-Content -Path $target -Value ($content.Replace($old, $new)) -Encoding UTF8 -NoNewline
 Write-Host '[patch] Applied. Restart "dsh web" to take effect.' -ForegroundColor Green
 Write-Host '[patch] NOTE: re-run after every DSH upgrade.' -ForegroundColor Yellow
