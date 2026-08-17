@@ -7,7 +7,7 @@
   disabled: true
 
 # 2) 挂载本插件自身（⚠️ 此 insert 行是插件 apply 的入口——删掉插件就不加载，
-#    8082 代理静默消失。2026-08-15 曾因缺此行走失，见 HANDOFF 坑 28）
+#    8082 代理静默消失。2026-08-15 曾因缺此行走失，见 MAINTENANCE.md 坑 28）
 - insert:
     - id: mobile-remote
       name: 'dsh-plugin-mobile-remote'
@@ -24,7 +24,7 @@
     - id: ui-directory-picker-browse
       name: '@deepseek-ai/dsh-client-ui-directory-picker-browse'
 
-# 4) web-runtime 补丁（trustedHosts 仅 dsh.remote 即满足运行（实测；见 HANDOFF 坑 23/29）；
+# 4) web-runtime 补丁（trustedHosts 仅 dsh.remote 即满足运行（实测；见 MAINTENANCE.md 坑 23/29）；
 #    真实隧道域名只存在 ~/.dsh/mobile-remote.auth 的 domain 行——仓库内不写真实域名；
 #    start-dsh.ps1 在隧道变化时自动追加/清理运行时副本的隧道域名）
 - id: web-runtime

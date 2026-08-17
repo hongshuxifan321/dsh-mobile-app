@@ -22,16 +22,16 @@ npx @deepseek-ai/dsh web --trusted-host dsh.remote
 
 手机浏览器打开隧道 URL → 输密码 → 完整操作 DSH（工作区、会话、文件浏览全可用）。
 
-## 独立移动端 UI（/mobile）
+## 移动端访问方式
 
-除官方桌面 UI 的移动适配外，插件自带**独立移动端界面**（`/mobile`，扫码后手机默认落地页），零依赖原生实现（HTML/CSS/JS，无框架）：
+当前移动端方案为：**官方 Web UI 本体 + 代理注入移动适配 CSS**（功能与网页端完全一致）。
 
-- **工作区 → 会话 → 聊天**三级导航；新建会话、会话标题/运行中状态、相对时间
-- **聊天**：用户/AI 气泡（DeepSeek 设计语言：22px 圆角、16px/24px 字号）、深度思考折叠块、工具调用行（可展开参数/结果）、流式增量渲染、自动轮询刷新（运行中 2s / 空闲 4s）
-- **发送/停止生成**、模型选择底部抽屉（provider 分组 + 思考强度）、暗色模式、系统上下文注入过滤
-- 安全边界与主路径一致：Basic Auth 密码 → 认证代理 → DSH RPC（`POST /api/<method>`，`client-request` 格式）
-
-静态文件每请求读盘：直接替换 `lib/mobile/` 下的文件即生效，无需重装插件。
+- `/mobile` 路径已 302 重定向到 `/`，旧的独立移动 UI 已废弃
+- 手机浏览器直接打开隧道 URL，输入密码后即可使用官方 UI
+- 另有 **PWA 通用客户端**（GitHub Pages 托管），适用于 iPhone / 鸿蒙等平台：
+  - 地址：<https://hongshuxifan321.github.io/dsh-mobile-app/pwa/>
+  - 用户填写自己的服务器地址 / 用户名 / 密码即可连接
+- Android 另有原生 WebView APK，见仓库 `public/`
 
 ## 原理
 

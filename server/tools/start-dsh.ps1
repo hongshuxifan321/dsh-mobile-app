@@ -30,8 +30,8 @@ if (Test-Path $CONFIG) {
 }
 $SUBDOMAIN_ID = $CFG['SUBDOMAIN_ID']
 $DOMAIN = $CFG['DOMAIN']
-$KEY = $CFG['DNSHE_KEY']
-$SECRET = $CFG['DNSHE_SECRET']
+$KEY = if ($env:DNSHE_KEY) { $env:DNSHE_KEY } else { $CFG['DNSHE_KEY'] }
+$SECRET = if ($env:DNSHE_SECRET) { $env:DNSHE_SECRET } else { $CFG['DNSHE_SECRET'] }
 if (-not $SUBDOMAIN_ID -or -not $DOMAIN -or -not $KEY -or -not $SECRET) {
   Write-Host '[start-dsh] missing config: copy tools/dsh-config.example.txt to tools/dsh-config.txt and fill in DOMAIN / SUBDOMAIN_ID / DNSHE_KEY / DNSHE_SECRET'
   exit 1
@@ -82,7 +82,11 @@ if (-not (Get-NetTCPConnection -LocalPort 3080 -State Listen -ErrorAction Silent
 
 # 1.5) ensure the isLoopback frontend patch survives DSH upgrades (idempotent:
 #      already-applied -> skip; DSH changed client.js -> loud failure, no blind overwrite)
-$PATCH_SCRIPT = Join-Path $PSScriptRoot 'apply-isloopback-patch.ps1'
+$PATCH_SCRIPT = Join-Path $PSScriptRoot '..\public\server\tools\apply-isloopback-patch.ps1'
+if (-not (Test-Path $PATCH_SCRIPT)) {
+  # 在 public/server/tools 下运行时，补丁脚本就在同目录
+  $PATCH_SCRIPT = Join-Path $PSScriptRoot 'apply-isloopback-patch.ps1'
+}
 if (Test-Path $PATCH_SCRIPT) {
   $patchOut = & powershell -NoProfile -ExecutionPolicy Bypass -File $PATCH_SCRIPT 2>&1
   if ($LASTEXITCODE -eq 0) {
@@ -95,10 +99,10 @@ if (Test-Path $PATCH_SCRIPT) {
     }
   } else {
     Write-Host ("[patch] FAILED: " + ($patchOut | Out-String).Trim()) -ForegroundColor Red
-    Write-Host '[patch] plugin config cards may be unavailable. DSH changed client.js layout? See HANDOFF pit 23' -ForegroundColor Yellow
+    Write-Host '[patch] plugin config cards may be unavailable. DSH changed client.js layout? See MAINTENANCE.md pit 23' -ForegroundColor Yellow
   }
 } else {
-  Write-Host '[patch] apply-isloopback-patch.ps1 missing (app-android gone?), skipping patch check' -ForegroundColor DarkGray
+  Write-Host '[patch] apply-isloopback-patch.ps1 missing (public/server/tools gone?), skipping patch check' -ForegroundColor DarkGray
 }
 
 # 2) quick tunnel loop: capture domain -> sync DNS -> reconnect

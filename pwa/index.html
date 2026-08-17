@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>DSH Remote PWA</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/styles.css?v=3">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <span class="title">DSH Remote</span>
+      <div class="topbar-actions">
+        <button id="themeBtn" class="btn">浅色</button>
+        <button id="settingsBtn" class="btn">设置</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <div id="connectView" class="view">
+        <button id="connectBtn" class="btn primary">连接服务器</button>
+        <p id="status" class="status">尚未配置服务器</p>
+      </div>
+
+      <div id="frameView" class="view hidden">
+        <iframe id="dshFrame" title="DSH Remote"></iframe>
+      </div>
+    </main>
+  </div>
+
+  <!-- 设置弹窗 -->
+  <div id="settingsModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>DSH 服务器设置</h2>
+      <label>
+        服务器地址
+        <input id="serverUrl" type="url" placeholder="https://your-domain.de5.net/mobile" autocomplete="url">
+      </label>
+      <label>
+        用户名
+        <input id="serverUser" type="text" placeholder="默认 dsh" autocomplete="username">
+      </label>
+      <label>
+        密码
+        <input id="serverPass" type="password" placeholder="已保存，留空则不修改" autocomplete="current-password">
+      </label>
+      <div class="modal-actions">
+        <button id="cancelBtn" class="btn">取消</button>
+        <button id="saveBtn" class="btn primary">保存并连接</button>
+      </div>
+      <p class="hint">支持填写裸域名（如 your-domain.de5.net）自动发现隧道；也可填完整 https:// 地址。首次连接会弹出浏览器登录框。</p>
+    </div>
+  </div>
+
+  <script src="js/app.js?v=3"></script>
+</body>
+</html>

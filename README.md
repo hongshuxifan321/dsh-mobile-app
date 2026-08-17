@@ -6,6 +6,18 @@ DeepSeek Harness 的手机客户端：全屏 WebView 加载你自己电脑上 DS
 
 > 服务器端需要部署 [dsh-plugin-mobile-remote](https://github.com/hongshuxifan321/dsh-mobile-app)（含 `/mobile` 界面 + 认证代理 + 隧道脚本），见 [DEPLOY.md](./DEPLOY.md)。
 
+## PWA 通用客户端（iPhone / 鸿蒙 / 其他平台）
+
+除了 Android APK，本仓库还提供一个 **PWA 通用客户端**，适用于 iPhone、鸿蒙等无法直接安装 APK 的平台。
+
+- PWA 地址：<https://hongshuxifan321.github.io/dsh-mobile-app/pwa/>
+- 用户打开后填写自己的 DSH 服务器地址 / 用户名 / 密码即可连接
+- 支持裸域名自动发现隧道（如 `your-domain.de5.net`）
+- 支持深色 / 浅色切换
+- 密码仅保存在当前页面内存中，不持久化
+- 详细说明见 [`pwa/README.md`](./pwa/README.md)
+
+
 ## 原理
 
 ```
@@ -62,3 +74,21 @@ https://<你的固定域名>/mobile   ← 你电脑上的 mobile-remote 认证�
 ```bash
 gradle assembleDebug   # 输出 app/build/outputs/apk/debug/app-debug.apk
 ```
+
+## 文档导航
+
+| 文档 | 内容 |
+|---|---|
+| [README.md](./README.md) | 项目总览 |
+| [DEPLOY.md](./DEPLOY.md) | 完整部署指南 |
+| [docs/QUICKSTART.md](./docs/QUICKSTART.md) | 极简部署教程 |
+| [docs/PWA-INSTALL.md](./docs/PWA-INSTALL.md) | 把 PWA 添加到主屏幕 |
+| [docs/BOUNDARIES.md](./docs/BOUNDARIES.md) | 使用边界与拓展方向 |
+| [CHANGELOG.md](./CHANGELOG.md) | 更新日志 |
+| [LICENSE](./LICENSE) | MIT 许可证 |
+
+## 使用边界与拓展
+
+当前版本的局限、拓展方向、开发者说明，见：
+
+- [docs/BOUNDARIES.md](./docs/BOUNDARIES.md)
