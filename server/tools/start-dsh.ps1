@@ -124,7 +124,7 @@ while ($true) {
 
   Remove-Item $LOG -ErrorAction SilentlyContinue
   Remove-Item "$LOG.out" -ErrorAction SilentlyContinue
-  $proc = Start-Process -FilePath $CF -ArgumentList 'tunnel','--url','http://127.0.0.1:8082' `
+  $proc = Start-Process -FilePath $CF -ArgumentList 'tunnel','--url','http://127.0.0.1:8082','--protocol','http2' `
     -WindowStyle Hidden -RedirectStandardError $LOG -RedirectStandardOutput "$LOG.out" -PassThru
   $tunnelDomain = ''
   $healthTick = 0

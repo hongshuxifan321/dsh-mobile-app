@@ -212,15 +212,10 @@
     min-width: 0 !important;
   }
   /* 输入栏上方的会话统计条（"2 轮 · 2 步 | LLM 8.1s | 缓存命中 91% | 输入 18.9K tok…"）：
-     官方 nowrap + ellipsis 截断，手机上只剩省略号——改横向滚动完整可读。
-     注意：composerSeat 内的 _root 同时命中输入卡（uV2eYG_root），其 overflow-x: auto 无副作用 */
-  [class$="_composerSeat"] [class$="_root"] {
-    white-space: nowrap !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    text-overflow: clip !important;
-    overscroll-behavior-x: contain !important;
-  }
+     原规则（横向滚动完整可读）已撤销——`[class$="_composerSeat"] [class$="_root"]`
+     会同时命中权限菜单 Menu 的包裹 `_root`，其 overflow-y: hidden 会把向上弹出的
+     权限菜单顶部裁掉（实测 Workspace/Full access/Read only 选项看不到）。
+     权限菜单可用性优先：统计条退回原生 nowrap+ellipsis（与桌面端一致），菜单不再被裁。 */
   [class$="_scrollBody"] pre,
   [class$="_scrollBody"] code {
     white-space: pre !important;
